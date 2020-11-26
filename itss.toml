@@ -1,0 +1,85 @@
+# Config file for the IT2S ITS-Station
+
+[general]
+itss-type = "rsu" # "obu" or "rsu"
+
+[security]
+ignore-auth = false # if 'true', ignores signatures, certificates authenticity
+# Identity
+id-random = true
+id-duration = 60                  # in seconds       :: set if id-random is 'true'
+path = "/etc/it2s/certs"          # certs, keys path :: set if id-random is 'true'
+station-id = 42 	          # stationID        :: set if id-random is 'false'
+mac-address = "04:e5:48:01:02:03" # source MAC addr  :: set if id-random is 'false', '04:e5:48:xx:xx:xx' -> CohdaWireless
+use-security = false
+
+
+[its-center] # RSU
+tile-zoom = 14
+[its-center.mqtt]
+host = "broker.es.av.it.pt"
+port = 1883
+user = "user_name"
+pass = "passwd"
+[its-center.mqtt.tls]
+use-tls  = false
+insecure = true
+cafile   = "/path/to/PEM/encoded/trusted/CA/certificate"
+certfile = "/path/to/PEM/encoded/certificate/for/this/client"
+keyfile  = "/path/to/PEM/encoded/private-key/for/this/client"
+
+
+[app] # OBU
+[app.mqtt]
+host = "127.0.0.1"
+port = 1883
+user = "user_name"
+pass = "passwd"
+[app.mqtt.denm-topic]
+app2obu = "obu/inqueue/xml/denm"
+obu2app = "obu/outqueue/xml/denm"
+[app.mqtt.ivim-topic]
+obu2app = "obu/outqueue/xml/ivim"
+[app.mqtt.cam-topic]
+obu2app = "obu/outqueue/xml/cam"
+[app.mqtt.cpm-topic]
+obu2app = "obu/outqueue/xml/cpm"
+[app.mqtt.hdmap-topic]
+obu2app = "obu/outqueue/json/hdmap"
+
+[denm]
+default-event-duration = 30 # s
+nmax-active-events = 100
+
+[cam]
+obu-period-min = 100          # ms, ignored
+obu-period-max = 1000 	      # ms, OBU CAM period
+rsu-period-min = 1000         # ms, RSU CAM period
+rsu-vehicle-permanence = 5000 # ms, how long a RSU transmits CAMs after receiving a vehicle's packet
+
+[ivim]
+nmax-active-services = 50
+replay-interval = 1000 # ms
+
+[replay]
+activate = true # activates/deactivates all types of packet replay
+
+[beacon]
+period = 0 # ms, 0 defaults to 3000 + rand E [0, 3000/4)
+
+[heartbeat] # RSU
+period = 10 # s
+
+[pcap]
+activate = true
+interface = "lo"
+
+[access]
+[access.ublox]
+channel = 180      # 180 = 5900 MHz, 182 = 5910 MHz
+radio = 0          # 0 = a or 1 = b
+channel-config = 0 # 0 or 1
+antenna = 3        # 3 = both antennas
+mcs = "MK2MCS_R12BPSK"
+power = 20         # 0.5 dBm steps
+
